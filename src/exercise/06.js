@@ -2,6 +2,7 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
+import warning from 'warning'
 import {Switch} from '../switch'
 
 const callAll =
@@ -43,11 +44,10 @@ function useToggle({
 
   const hasOnChange = Boolean(onChange)
   React.useEffect(() => {
-    if (!hasOnChange && onIsControlled && !readOnly) {
-      console.error(
-        'Warning: Failed prop type: You provided a `on` prop to a form field without an `onChange` handler. This will render a read-only field. If you want it to be mutable, use `initialOn`. Otherwse, set either `onChange` or `readOnly`.',
-      )
-    }
+    warning(
+      !(!hasOnChange && onIsControlled && !readOnly),
+      'Failed prop type: You provided a `on` prop to a form field without an `onChange` handler. This will render a read-only field. If you want it to be mutable, use `initialOn`. Otherwse, set either `onChange` or `readOnly`.',
+    )
   }, [hasOnChange, onIsControlled, readOnly])
 
   function dispatchWithOnChange(action) {
@@ -117,7 +117,7 @@ function App() {
       <div>
         <Toggle
           on={bothOn}
-          readOnly={true} /* onChange={handleToggleChange} */
+          readOnly={false} /* onChange={handleToggleChange} */
         />
         <Toggle on={bothOn} onChange={handleToggleChange} />
       </div>
