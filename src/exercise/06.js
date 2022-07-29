@@ -29,6 +29,26 @@ function toggleReducer(state, {type, initialState}) {
   }
 }
 
+// Extra credit 3
+function useControlledSwitchWarning(
+  controlPropValue,
+  controlPropName,
+  componentName,
+) {
+  const isControlled = controlPropValue != null
+  const {current: wasControlled} = React.useRef(isControlled)
+  React.useEffect(() => {
+    warning(
+      !(isControlled && !wasControlled),
+      `\`${componentName}\` is changing from uncontrolled to controlled ... check the \`${controlPropName}\``,
+    )
+    warning(
+      !(!isControlled && wasControlled),
+      `\`${componentName}\` is changing from controlled to uncontrolled ... check the \`${controlPropName}\``,
+    )
+  }, [componentName, controlPropName, isControlled, wasControlled])
+}
+
 function useToggle({
   initialOn = false,
   reducer = toggleReducer,
@@ -43,17 +63,20 @@ function useToggle({
   const on = onIsControlled ? controlledOn : state.on
 
   //Extra credit 2
-  const {current: onWasControlled} = React.useRef(onIsControlled)
-  React.useEffect(() => {
-    warning(
-      !(onIsControlled && !onWasControlled),
-      'changing from uncontrolled to controlled',
-    )
-    warning(
-      !(!onIsControlled && onWasControlled),
-      'changing from controlled to uncontrolled',
-    )
-  }, [onIsControlled, onWasControlled])
+  // const {current: onWasControlled} = React.useRef(onIsControlled)
+  // React.useEffect(() => {
+  //   warning(
+  //     !(onIsControlled && !onWasControlled),
+  //     'changing from uncontrolled to controlled',
+  //   )
+  //   warning(
+  //     !(!onIsControlled && onWasControlled),
+  //     'changing from controlled to uncontrolled',
+  //   )
+  // }, [onIsControlled, onWasControlled])
+
+  // Part of extra credit 3
+  useControlledSwitchWarning(controlledOn, 'on', 'useToggle')
 
   // Extra credit 1
   const hasOnChange = Boolean(onChange)
