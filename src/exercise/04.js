@@ -8,12 +8,19 @@ function useToggle() {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
 
-  return {on, toggle, ...getTogglerProps()}
-}
+  // getter to be WITHIN useToggle
+  function getTogglerProps({onClick, ...props} = {}) {
+    return {
+      'aria-pressed': on,
+      onClick: () => {
+        onClick && onClick()
+        toggle()
+      },
+      ...props,
+    }
+  }
 
-function getTogglerProps(...props) {
-  const togglerProps = {...props}
-  return togglerProps
+  return {on, toggle, getTogglerProps}
 }
 
 function App() {
