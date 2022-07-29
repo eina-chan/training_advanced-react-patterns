@@ -66,6 +66,7 @@ function useOnChangeReadOnlyWarning(
       `Failed prop type: You provided a \`${controlPropName}\` to \`${componentName}\` without an \`${onChangeProp}\` handler. This will render a read-only field. If you want it to be mutable, use \`${initialValueProp}\`. Otherwse, set either \`${onChangeProp}\` or \`${readOnlyProp}\`.`,
     )
   }, [
+    componentName,
     controlPropName,
     hasOnChange,
     initialValueProp,
@@ -89,40 +90,47 @@ function useToggle({
   const onIsControlled = controlledOn != null
   const on = onIsControlled ? controlledOn : state.on
 
-  //Extra credit 2
-  // const {current: onWasControlled} = React.useRef(onIsControlled)
-  // React.useEffect(() => {
-  //   warning(
-  //     !(onIsControlled && !onWasControlled),
-  //     'changing from uncontrolled to controlled',
-  //   )
-  //   warning(
-  //     !(!onIsControlled && onWasControlled),
-  //     'changing from controlled to uncontrolled',
-  //   )
-  // }, [onIsControlled, onWasControlled])
+  // Extra credit 4
+  if (process.env.NODE_ENV !== 'production') {
+    //Extra credit 2
+    // const {current: onWasControlled} = React.useRef(onIsControlled)
+    // React.useEffect(() => {
+    //   warning(
+    //     !(onIsControlled && !onWasControlled),
+    //     'changing from uncontrolled to controlled',
+    //   )
+    //   warning(
+    //     !(!onIsControlled && onWasControlled),
+    //     'changing from controlled to uncontrolled',
+    //   )
+    // }, [onIsControlled, onWasControlled])
 
-  // Part of extra credit 3
-  useControlledSwitchWarning(controlledOn, 'on', 'useToggle')
+    // Part of extra credit 3
 
-  // Extra credit 1
-  // const hasOnChange = Boolean(onChange)
-  // React.useEffect(() => {
-  //   warning(
-  //     !(!hasOnChange && onIsControlled && !readOnly),
-  //     'Failed prop type: You provided a `on` prop to a form field without an `onChange` handler. This will render a read-only field. If you want it to be mutable, use `initialOn`. Otherwse, set either `onChange` or `readOnly`.',
-  //   )
-  // }, [hasOnChange, onIsControlled, readOnly])
-  useOnChangeReadOnlyWarning(
-    controlledOn,
-    'on',
-    'useToggle',
-    Boolean(onChange),
-    readOnly,
-    'readOnly',
-    initialOn,
-    onChange,
-  )
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useControlledSwitchWarning(controlledOn, 'on', 'useToggle')
+
+    // Extra credit 1
+    // const hasOnChange = Boolean(onChange)
+    // React.useEffect(() => {
+    //   warning(
+    //     !(!hasOnChange && onIsControlled && !readOnly),
+    //     'Failed prop type: You provided a `on` prop to a form field without an `onChange` handler. This will render a read-only field. If you want it to be mutable, use `initialOn`. Otherwse, set either `onChange` or `readOnly`.',
+    //   )
+    // }, [hasOnChange, onIsControlled, readOnly])
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useOnChangeReadOnlyWarning(
+      controlledOn,
+      'on',
+      'useToggle',
+      Boolean(onChange),
+      readOnly,
+      'readOnly',
+      initialOn,
+      onChange,
+    )
+  }
 
   function dispatchWithOnChange(action) {
     if (!onIsControlled) {
