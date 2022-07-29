@@ -9,12 +9,17 @@ const callAll =
   (...args) =>
     fns.forEach(fn => fn?.(...args))
 
+const toggleActionTypes = {
+  toggle: 'toggle',
+  reset: 'reset',
+}
+
 function toggleReducer(state, {type, initialState}) {
   switch (type) {
-    case 'toggle': {
+    case toggleActionTypes.toggle: {
       return {on: !state.on}
     }
-    case 'reset': {
+    case toggleActionTypes.reset: {
       return initialState
     }
     default: {
@@ -64,7 +69,7 @@ function App() {
   const clickedTooMuch = timesClicked >= 4
 
   function toggleStateReducer(state, action) {
-    if (action.type === 'toggle' && clickedTooMuch) {
+    if (action.type === toggleActionTypes.toggle && clickedTooMuch) {
       return {on: state.on}
     }
     return toggleReducer(state, action)
