@@ -49,6 +49,33 @@ function useControlledSwitchWarning(
   }, [componentName, controlPropName, isControlled, wasControlled])
 }
 
+function useOnChangeReadOnlyWarning(
+  controlPropValue,
+  controlPropName,
+  componentName,
+  hasOnChange,
+  readOnly,
+  readOnlyProp,
+  initialValueProp,
+  onChangeProp,
+) {
+  const isControlled = controlPropValue != null
+  React.useEffect(() => {
+    warning(
+      !(!hasOnChange && isControlled && !readOnly),
+      `Failed prop type: You provided a \`${controlPropName}\` to \`${componentName}\` without an \`${onChangeProp}\` handler. This will render a read-only field. If you want it to be mutable, use \`${initialValueProp}\`. Otherwse, set either \`${onChangeProp}\` or \`${readOnlyProp}\`.`,
+    )
+  }, [
+    controlPropName,
+    hasOnChange,
+    initialValueProp,
+    isControlled,
+    onChangeProp,
+    readOnly,
+    readOnlyProp,
+  ])
+}
+
 function useToggle({
   initialOn = false,
   reducer = toggleReducer,
@@ -79,13 +106,23 @@ function useToggle({
   useControlledSwitchWarning(controlledOn, 'on', 'useToggle')
 
   // Extra credit 1
-  const hasOnChange = Boolean(onChange)
-  React.useEffect(() => {
-    warning(
-      !(!hasOnChange && onIsControlled && !readOnly),
-      'Failed prop type: You provided a `on` prop to a form field without an `onChange` handler. This will render a read-only field. If you want it to be mutable, use `initialOn`. Otherwse, set either `onChange` or `readOnly`.',
-    )
-  }, [hasOnChange, onIsControlled, readOnly])
+  // const hasOnChange = Boolean(onChange)
+  // React.useEffect(() => {
+  //   warning(
+  //     !(!hasOnChange && onIsControlled && !readOnly),
+  //     'Failed prop type: You provided a `on` prop to a form field without an `onChange` handler. This will render a read-only field. If you want it to be mutable, use `initialOn`. Otherwse, set either `onChange` or `readOnly`.',
+  //   )
+  // }, [hasOnChange, onIsControlled, readOnly])
+  useOnChangeReadOnlyWarning(
+    controlledOn,
+    'on',
+    'useToggle',
+    Boolean(onChange),
+    readOnly,
+    'readOnly',
+    initialOn,
+    onChange,
+  )
 
   function dispatchWithOnChange(action) {
     if (!onIsControlled) {
