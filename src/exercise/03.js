@@ -15,7 +15,7 @@ function Toggle({children}) {
   // 🐨 remove all this 💣 and instead return <ToggleContext.Provider> where
   // the value is an object that has `on` and `toggle` on it.
   return (
-    <ToggleContext.Provider value={{on, toggle}}>
+    <ToggleContext.Provider value={[on, toggle]}>
       {children}
     </ToggleContext.Provider>
   )
